@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# upload
+mkdir -p test
+echo 123 > test/demo
+
+pod=`oc get pods | grep Run | awk '{print $1}' | awk 'NR==1'`
+
+oc rsync ./test $pod:
+
+oc exec $pod -- cat test/demo
+
+# download
+mkdir test2
+oc rsync  ruby-ex-1-vfj82:test/ ./test2/
+cat test2/demo

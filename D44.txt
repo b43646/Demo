@@ -1,0 +1,16 @@
+oc new-poject t6
+
+oc new-app --docker-image=quay.io/loren123/custom_image:v1 --name=v1
+
+oc new-app --docker-image=quay.io/loren123/custom_image:v2 --name=v2
+
+sleep 60
+
+oc expose svc/v1 --name=demo
+
+oc patch route demo -p '{"spec":{"alternateBackends":[{"kind":"Service","name":"v2","weight":50}]}}'
+oc patch route demo -p '{"spec":{"to":{"weight": 50}}}'
+
+addr=`oc get route | grep demo | awk '{print $2}'`
+
+for i in {1..4}; do curl $addr/test.txt; done

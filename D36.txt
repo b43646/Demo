@@ -1,0 +1,17 @@
+
+
+[root@clientvm 0 ~]# oc get scheduler cluster -o yaml
+apiVersion: config.openshift.io/v1
+kind: Scheduler
+metadata:
+  creationTimestamp: "2020-07-23T13:43:47Z"
+  generation: 1
+  name: cluster
+  resourceVersion: "1500"
+  selfLink: /apis/config.openshift.io/v1/schedulers/cluster
+  uid: b7e4d6f7-1cf3-4924-885b-03fb249b9238
+spec:
+  mastersSchedulable: false
+  policy:
+    name: ""
+status: {}

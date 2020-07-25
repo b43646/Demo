@@ -1,0 +1,7 @@
+[root@clientvm 0 ~]# oc get IngressController -A
+NAMESPACE                    NAME      AGE
+openshift-ingress-operator   default   41h
+
+手动扩容
+
+基于指标的扩容，需要定制开发。

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+node=`oc get nodes | grep worker | awk '{print $1}' | awk 'NR==1'`
+oc label node $node type=user-node region=east
+oc new-project t1
+oc annotate ns t1 openshift.io/node-selector="type=user-node,region=east"
+oc new-app ruby~https://github.com/sclorg/ruby-ex.git
+sleep 100
+oc scale dc/ruby-ex --replicas=2
+

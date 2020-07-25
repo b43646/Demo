@@ -1,0 +1,63 @@
+oc new-project t3
+
+cat > busybox.yaml <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: busybox-pod
+  name: test-busybox
+spec:
+  containers:
+  - command:
+    - sleep
+    - "3600"
+    image: busybox
+    imagePullPolicy: Always
+    name: test-busybox
+EOF
+
+cat > pod-affinity.yaml << EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod-affinity
+  labels:
+    app: pod-affinity-pod
+spec:
+  containers:
+  - name: with-pod-affinity
+    image: nginx
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - busybox-pod
+        topologyKey: kubernetes.io/hostname
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - node-affinity-pod
+          topologyKey: kubernetes.io/hostname
+EOF
+
+oc apply -f busybox.yaml
+
+sleep 10
+
+oc apply -f pod-affinity.yaml
+
+sleep 10
+
+oc get pods -o wide
+
